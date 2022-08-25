@@ -1,11 +1,14 @@
 import jwt
-from flask import request, current_app
+from flask import request, current_app, abort
 
 from implemented import user_service
 
 
 def auth_required(func):
     def wrapper(*args, **kwargs):
+        if 'Authorization' not in request.headers:
+            abort(401)
+
         token = request.headers.environ.get('HTTP_AUTHORIZATION').replace('Bearer ', '')
 
         if not token:
